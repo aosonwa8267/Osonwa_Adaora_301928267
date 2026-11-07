@@ -1,7 +1,13 @@
-# Adaora Osonwa — MIT 8103
+# Smart Clinic Management App
 
-Student ID: 301928267
+Adaora Osonwa · Student ID 301928267
 
-Smart Clinic Management App
+The portfolio uses fictional records for Smart Clinic Management App.
 
-The portfolio is being generated. Completed stages will appear in the commit history.
+- [Portfolio 1](portfolio-1-database-design/)
+- [Portfolio 2](portfolio-2-query-optimisation/)
+- [Portfolio 3](portfolio-3-transactions-concurrency/)
+- [Portfolio 4](portfolio-4-nosql/)
+- [Portfolio 5](portfolio-5-distributed-cloud/)
+
+[Final summary](Osonwa_Adaora_301928267_FinalSummary.md) · [PDF](Osonwa_Adaora_301928267_FinalSummary.pdf)
