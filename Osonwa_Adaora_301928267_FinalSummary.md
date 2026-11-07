@@ -4,11 +4,11 @@
 
 ## Case study
 
-My case study is Smart Clinic Management App. I designed the database for clinic reception staff, clinicians and clinic administrators, with separate tables named patients, clinicians and appointments. It supports these operations: book and manage appointments; review patient appointment history; summarize clinician appointment activity.
+The case study I chose is on a Smart Clinic Management App. I designed the database for clinic reception staff, doctors, nurses and the clinic administrators, using 3 separate tables named patients, clinicians and appointments. It handles the booking and managing of appointments; reviewing of patient appointment history; and summarizing the clinics appointment activity.
 
 ## Portfolio 1: Database Design and Modelling
 
-I organised the relational design into 3 tables. Primary keys identify records, foreign keys preserve the links, and checks enforce the stated business rules. A partial unique index on clinician_id and starts_at applies when status is booked or checked_in, preventing two active appointments for the same clinician and start time. The normalisation examples show the sample data at 1NF, 2NF and 3NF. All 21 deliberately invalid inserts were rejected without changing the valid sample rows.
+I setup the relational design into 3 tables. The primary keys identify records, foreign keys preserve the links, and the checks make sure the business rules are met. I added a partial unique index on clinician_id and starts_at specifically for appointments that are booked or checked in, which stops a doctor from having two active appointments at the same time. The normalisation breakdown shows the sample data stepping from 1NF to 2NF and 3NF. All 21 test inserts with bad data were rejected without messing up the correct records.
 
 ![Smart Clinic Management App ER diagram](images/Osonwa_Adaora_301928267_ERDiagram.png)
 
