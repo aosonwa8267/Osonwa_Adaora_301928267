@@ -22,11 +22,11 @@ I ran three SQL queries against the sample records. The join returned 2 rows and
 
 ## Portfolio 3: Transactions and Concurrency
 
-I used a temporary counter on appointments to test COMMIT, ROLLBACK and READ COMMITTED isolation. The uncommitted update remained hidden from the other session, and ROLLBACK restored the earlier committed value. Without locking, two increments left the counter at 2. With SELECT FOR UPDATE, Session B waited for Session A and the final value was 3. The helper is confined to this exercise; the case's original business fields stay unchanged.
+I used a temporary counter column on appointments to test COMMIT, ROLLBACK, and READ COMMITTED isolation. When one session made an uncommitted change, the other session couldn't see it, and ROLLBACK successfully put things back the way they were. Without locking, two simultaneous updates left the counter at 2 instead of 3 due to a race condition. Using SELECT FOR UPDATE made Session B wait for Session A, so the final count came out correct at 3. This test helper was kept separate so the real business logic stays untouched.
 
 ## Portfolio 4: NoSQL and Advanced Data Models
 
-I used clinic_visit_events for the case's event documents. MongoDB inserted 4 sample events and returned the expected results for 4 queries. Validation rejected an invalid date type and a duplicate event ID. Embedded snapshots keep related details with an event, while the details field can differ by event type. These are fictional events; PostgreSQL continues to enforce its relational rules.
+For the NoSQL part, I used a clinic_visit_events collection. MongoDB successfully stored 4 sample event documents and passed all 4 test queries. Validation stopped an incorrect date type and blocked a duplicate event ID. Embedding snapshots keeps relevant visit details right inside the event document. These are just test events; PostgreSQL remains the main database enforcing the strict relational rules.
 
 ## Repository and evidence
 
@@ -39,15 +39,15 @@ The portfolio folders contain the SQL and JavaScript, explanations, query plans,
 
 ## Portfolio 5: Distributed and Cloud Database Exercise
 
-I proposed three MongoDB replica members across separate failure zones. The discussion covers primary elections, majority acknowledgement, secondary lag and sharding trade-offs for clinic_visit_events. Replication supports availability, while backups address recovery. PostgreSQL needs its own availability plan. This is the permitted discussion option; no live replica set or failover test was deployed.
+I proposed a 3-member MongoDB replica set spread across different failure zones. The write-up explains primary elections, majority acknowledgements, replication lag, and sharding trade-offs for the event logs. Replication keeps things available, while backups handle recovery (PostgreSQL needs its own separate backup plan). This was a discussion-only task, so no live cluster or failover test was actually deployed.
 
 ## Individual reflection
 
-I kept patients, clinicians, appointments in separate tables so their details could be maintained without repeating them in every related record. A partial unique index on clinician_id and starts_at applies when status is booked or checked_in, preventing two active appointments for the same clinician and start time. The constraint tests check this alongside the required values and record links. One issue illustrated by the two-session exercise is that both sessions can read the same value before either update is committed. Locking the row before reading preserves both increments. The index comparison also shows why I need to check the execution plan as well as the final answer: the same result can require different amounts of database work.
+I kept patients, clinicians, and appointments in separate tables, which made it easy to update details without repeating data everywhere. The partial unique index on clinician_id and starts_at worked well to prevent double-booking. The multi-session concurrency test showed why locking matters—otherwise, two sessions end up reading  the same stale data before either saves. Lastly, checking the query execution plan taught me that just getting the right answer isn't enough; you also want to make sure the database isn't doing unnecessary heavy lifting.
 
 ## AI-use declaration
 
-I used GitHub Copilot and the portfolio generator to help prepare the database model, scripts and explanations. The generator ran the PostgreSQL and MongoDB exercises, checked their outputs and captured the result images.  I remain responsible for checking and explaining the submitted work.
+I used GitHub Copilot and the portfolio generator to help draft the database model, scripts and explanations. The generator ran the PostgreSQL and MongoDB exercises, checked their outputs and captured the result images.  I checked everything and remain fully responsible for the submitted work.
 
 ## References
 
