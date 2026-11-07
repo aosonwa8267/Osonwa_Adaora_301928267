@@ -18,36 +18,35 @@ Figure 1. Tables, keys and relationships. PK: primary key; FK: foreign key; UK: 
 
 ## Portfolio 2: Query Processing and Optimisation
 
-I ran three SQL queries against the sample records. The join returned 2 rows and included Sample Patient One. For the index comparison, I used 25,000 separate performance rows. The median lookup time changed from 1.256 ms to 0.216 ms. Both phases returned the same records. The measured plan used the new index. These timings apply to this lookup and environment.
+I ran three SQL queries against the sample records. The join returned 2 rows and did include Sample Patient One. For the index comparison I loaded in an additional 25,000 performance rows to see how it holds up. The median lookup time went from 1.256ms down to 0.216ms and both phases returned exactly the same records. The query plan confirms that PostgreSQL has indeed picked up the new index. Obviously these timing figures are for that one lookup and my particular machine.
 
 ## Portfolio 3: Transactions and Concurrency
 
-I used a temporary counter column on appointments to test COMMIT, ROLLBACK, and READ COMMITTED isolation. When one session made an uncommitted change, the other session couldn't see it, and ROLLBACK successfully put things back the way they were. Without locking, two simultaneous updates left the counter at 2 instead of 3 due to a race condition. Using SELECT FOR UPDATE made Session B wait for Session A, so the final count came out correct at 3. This test helper was kept separate so the real business logic stays untouched.
+I've added a temporary counter column to the appointments table in order to test out COMMIT, ROLLBACK and READ COMMITTED isolation. When Session A made an uncommitted change, Session B completely failed to see it at all and a ROLLBACK would simply wipe the change and restore the original values. Running two simultaneous updates without locking resulted in a classic race condition (we ended up with the counter at 2 rather than the correct value of 3). SELECT FOR UPDATE on Session B forced it to pause until Session A had finished and we then got the correct final count of 3. The column was purely for testing purposes so the actual business logic remains unaltered.
 
 ## Portfolio 4: NoSQL and Advanced Data Models
 
-For the NoSQL part, I used a clinic_visit_events collection. MongoDB successfully stored 4 sample event documents and passed all 4 test queries. Validation stopped an incorrect date type and blocked a duplicate event ID. Embedding snapshots keeps relevant visit details right inside the event document. These are just test events; PostgreSQL remains the main database enforcing the strict relational rules.
+On the NoSQL side I've got a clinic_visit_events collection in Mongodb. It took in 4 sample event documents and returned the correct answers for all 4 test queries. Schema validation picked up on an invalid date format and stopped a duplicate event ID from making it through. The snapshots are embedded so that the relevant visit data is right in the event record where it's needed. Remember these are just mock events, PostgreSQL is still the database of record for enforcing relational integrity.
 
 ## Repository and evidence
 
 https://github.com/aosonwa8267/Osonwa_Adaora_301928267
 
-The portfolio folders contain the SQL and JavaScript, explanations, query plans, result tables and screenshots.
-
+The portfolio folders contain all the SQL and JavaScript, the explanations, the query plans, the result tables and the screenshots.
 
 <!-- PAGE BREAK -->
 
 ## Portfolio 5: Distributed and Cloud Database Exercise
 
-I proposed a 3-member MongoDB replica set spread across different failure zones. The write-up explains primary elections, majority acknowledgements, replication lag, and sharding trade-offs for the event logs. Replication keeps things available, while backups handle recovery (PostgreSQL needs its own separate backup plan). This was a discussion-only task, so no live cluster or failover test was actually deployed.
+I've got a 3 member MongoDB replica set spread across various availability zones. The write-up covers primary elections, majority write acks, secondary replication lag and the trade-offs of sharding the event logs. Having replica nodes ensures the system is available and scheduled backups take care of recovery (PostgreSQL would require its own dedicated failover plan). This was all purely an architectural exercise so no live cluster or failover was actually attempted.
 
 ## Individual reflection
 
-I kept patients, clinicians, and appointments in separate tables, which made it easy to update details without repeating data everywhere. The partial unique index on clinician_id and starts_at worked well to prevent double-booking. The multi-session concurrency test showed why locking matters—otherwise, two sessions end up reading  the same stale data before either saves. Lastly, checking the query execution plan taught me that just getting the right answer isn't enough; you also want to make sure the database isn't doing unnecessary heavy lifting.
+I kept patients, clinicians and appointments in separate tables which made it a lot easier to update records (no need to duplicate data across the database). A partial unique index on clinician_id and starts_at proved to be a good solution for preventing double booking on active slots. The concurrency test really drove home the importance of proper locking as otherwise two users will just end up reading the same stale data before they go to save their changes. The query execution plans also taught me that getting the right answer is only half the battle, you also have to ensure that the engine isn't just grinding through a massive amount of extra work in the background.
 
 ## AI-use declaration
 
-I used GitHub Copilot and the portfolio generator to help draft the database model, scripts and explanations. The generator ran the PostgreSQL and MongoDB exercises, checked their outputs and captured the result images.  I checked everything and remain fully responsible for the submitted work.
+I used GitHub Copilot and the portfolio generator to produce the database model, the scripts and some of the associated explanations. The tool ran the PostgreSQL and MongoDB exercises, checked the outputs and took the resulting images. I've checked everything and I remain fully responsible for the work that's been submitted.
 
 ## References
 
